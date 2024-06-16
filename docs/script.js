@@ -5,13 +5,13 @@ const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 
 const birdImg = new Image();
-birdImg.src = 'images/sasha.jpg';
+birdImg.src = 'images/sasha.jpg';  // Вставьте URL вашего изображения птицы
 
 const pipeNorthImg = new Image();
-pipeNorthImg.src = 'images/chlen_vniz.jpg';
+pipeNorthImg.src = 'images/chlen_vniz.jpg';  // Вставьте URL вашего изображения верхней трубы
 
 const pipeSouthImg = new Image();
-pipeSouthImg.src = 'images/chlen_vverh.jpg';
+pipeSouthImg.src = 'images/chlen_vverh.jpg';  // Вставьте URL вашего изображения нижней трубы
 
 const bird = {
     x: 50,
@@ -22,13 +22,20 @@ const bird = {
     lift: -5,
     velocity: 0
 };
-
 const pipes = [];
 const pipeWidth = 150;
 const gap = 200;
 
 let frame = 0;
 let score = 0;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -42,7 +49,7 @@ function draw() {
         resetGame();
     }
 
-    if (frame % 150 === 0) {
+    if (frame % 250 === 0) {
         let pipeY = Math.floor(Math.random() * (canvas.height - gap - pipeWidth)) - canvas.height;
         pipes.push({
             x: canvas.width,
@@ -75,7 +82,7 @@ function draw() {
     context.fillText("Score: " + score, 10, 20);
 
     frame++;
-    setTimeout(draw, 1000 / 60);
+    setTimeout(draw, 1000 / 90);
 }
 
 function resetGame() {
