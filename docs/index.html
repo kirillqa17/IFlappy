@@ -2,58 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird Game</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #87CEEB; /* Голубой фон */
-        }
-        #gameCanvas {
-            display: block;
-            margin: auto;
-            width: 100vw;
-            height: 100vh;
-        }
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 30px;
-            text-align: center;
-            display: none;
-        }
-        #restartButton {
-            display: none;
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 10px 20px;
-            font-size: 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        #restartButton:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
-    <div id="message"></div>
-    <button id="restartButton">Играть заново</button>
-
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="message"></div>
+        <button id="restartButton">Играть заново</button>
+        <div id="scoreBackground">Score: <span id="score">0</span></div>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

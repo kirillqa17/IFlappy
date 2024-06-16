@@ -1,13 +1,75 @@
-body {
+body, html {
     margin: 0;
+    padding: 0;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #70c5ce;
+    height: 100%;
+    background-color: #87CEEB; /* Голубой фон */
 }
 
-canvas {
-    background-color: #fff;
-    border: 1px solid #000;
+#gameContainer {
+    position: relative;
+}
+
+#gameCanvas {
+    display: block;
+    background-color: #87CEEB;
+}
+
+#message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5); /* Сделаем фон аналогичным фону для счёта */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+    display: none;
+    z-index: 1;
+}
+
+#restartButton {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: black;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 18px;
+    display: none;
+    z-index: 1;
+}
+
+#scoreBackground {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5); /* Прозрачный чёрный фон */
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 20px;
+    z-index: 1;
+}
+
+#message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 24px;
+    text-align: center;
+    display: none;
+    z-index: 1;
 }

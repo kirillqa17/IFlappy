@@ -5,15 +5,29 @@ const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 const messageDiv = document.getElementById('message');
 const restartButton = document.getElementById('restartButton');
+const scoreBackground = document.getElementById('scoreBackground');
+const scoreSpan = document.getElementById('score');
 
 const birdImg = new Image();
-birdImg.src = 'images/sasha.jpg';  // Вставьте URL вашего изображения птицы
-
+const birdFlapImg = new Image();
 const pipeNorthImg = new Image();
-pipeNorthImg.src = 'images/chlen_vniz.jpg';  // Вставьте URL вашего изображения верхней трубы
-
 const pipeSouthImg = new Image();
-pipeSouthImg.src = 'images/chlen_vverh.jpg';  // Вставьте URL вашего изображения нижней трубы
+const backgroundImg = new Image();
+const smokeImg = new Image();
+
+birdImg.src = 'images/sasha.jpg';
+birdFlapImg.src = 'images/sasha_flap.jpg';
+pipeNorthImg.src = 'images/chlen_vniz.jpg';
+pipeSouthImg.src = 'images/chlen_vverh.jpg';
+backgroundImg.src = 'images/fon.png';
+smokeImg.src = 'images/smoke.png';
+
+// Add error handling for images
+for (let img of [birdImg, birdFlapImg, pipeNorthImg, pipeSouthImg, backgroundImg, smokeImg]) {
+    img.onerror = () => {
+        console.error(`Failed to load image: ${img.src}`);
+    };
+}
 
 const bird = {
     x: 50,
@@ -24,13 +38,20 @@ const bird = {
     lift: -5,
     velocity: 0
 };
+
 const pipes = [];
+const smokes = [];
 const pipeWidth = 150;
 const gap = 200;
 
 let frame = 0;
 let score = 0;
 let gameStarted = false;
+let birdFlap = false;
+let gameInterval;
+
+const backgroundSpeed = 2; // Скорость движения фона
+let backgroundX = 0;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -45,23 +66,37 @@ function startGame() {
     frame = 0;
     score = 0;
     pipes.length = 0;
+    smokes.length = 0;
     bird.y = 150;
     bird.velocity = 0;
-    draw();
+    scoreBackground.style.display = 'block';
+    gameInterval = setInterval(draw, 1000 / 60);
 }
 
 function draw() {
-    if (!gameStarted) return;
-    
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    // Draw background
+    backgroundX -= backgroundSpeed;
+    if (backgroundX <= -canvas.width) {
+        backgroundX = 0;
+    }
+
+    context.drawImage(backgroundImg, backgroundX, 0, canvas.width, canvas.height);
+    context.drawImage(backgroundImg, backgroundX + canvas.width, 0, canvas.width, canvas.height);
+
+    // Draw bird with flapping wings effect
+    if (birdFlap) {
+        context.drawImage(birdFlapImg, bird.x, bird.y, bird.width, bird.height);
+    } else {
+        context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+    }
 
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
 
     if (bird.y + bird.height > canvas.height || bird.y < 0) {
-        gameOver();
+        triggerGameOver();
         return;
     }
 
@@ -79,6 +114,7 @@ function draw() {
         if (pipes[i].x + pipeWidth < 0) {
             pipes.splice(i, 1);
             score++;
+            scoreSpan.textContent = score;
         }
 
         context.drawImage(pipeNorthImg, pipes[i].x, pipes[i].y, pipeWidth, canvas.height);
@@ -89,32 +125,47 @@ function draw() {
             bird.x < pipes[i].x + pipeWidth &&
             (bird.y < pipes[i].y + canvas.height || bird.y + bird.height > pipes[i].y + canvas.height + gap)
         ) {
-            gameOver();
+            triggerGameOver();
             return;
         }
     }
 
-    context.fillStyle = "#000";
-    context.font = "20px Arial";
-    context.fillText("Score: " + score, 10, 20);
+    // Draw smokes
+    for (let i = 0; i < smokes.length; i++) {
+        context.globalAlpha = smokes[i].opacity;
+        context.drawImage(smokeImg, smokes[i].x, smokes[i].y, 50, 50);
+        smokes[i].y += smokes[i].vy;
+        smokes[i].opacity -= 0.01; // Adjust the speed of fading out
+        if (smokes[i].opacity <= 0) {
+            smokes.splice(i, 1);
+        }
+    }
+    context.globalAlpha = 1.0;
 
     frame++;
-    setTimeout(draw, 1000 / 60);
+}
+
+function triggerGameOver() {
+    gameStarted = false;
+    clearInterval(gameInterval);
+    setTimeout(gameOver, 1000); // Добавляем задержку, чтобы смоки успели показаться
 }
 
 function gameOver() {
-    gameStarted = false;
-    messageDiv.textContent = "Вы посадили Сашу на хуй";
+    messageDiv.textContent = "Вы посадили Сашу на хуй\nВаш счет: " + score;
     messageDiv.style.display = "block";
     restartButton.style.display = "block";
+    scoreBackground.style.display = "none";
 }
 
 function resetGame() {
     bird.y = 150;
     bird.velocity = 0;
     pipes.length = 0;
+    smokes.length = 0;
     score = 0;
     frame = 0;
+    birdFlap = false;
     messageDiv.style.display = "none";
     restartButton.style.display = "none";
     startCountdown();
@@ -124,7 +175,8 @@ function startCountdown() {
     let countdown = 3;
     messageDiv.textContent = countdown;
     messageDiv.style.display = "block";
-    
+    messageDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";  // Добавьте этот стиль
+
     const countdownInterval = setInterval(() => {
         countdown--;
         if (countdown <= 0) {
@@ -140,12 +192,28 @@ function startCountdown() {
 canvas.addEventListener('click', () => {
     if (gameStarted) {
         bird.velocity = bird.lift;
+        birdFlap = true;
+        smokes.push({
+            x: bird.x,
+            y: bird.y + bird.height,
+            opacity: 1,
+            vy: 2
+        });
+        setTimeout(() => birdFlap = false, 200);
     }
 });
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && gameStarted) {
         bird.velocity = bird.lift;
+        birdFlap = true;
+        smokes.push({
+            x: bird.x,
+            y: bird.y + bird.height,
+            opacity: 1,
+            vy: 2
+        });
+        setTimeout(() => birdFlap = false, 200);
     }
 });
 
