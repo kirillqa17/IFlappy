@@ -13,16 +13,20 @@ bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    bot.reply_to(message, "Привет! Добро пожаловать в игру! Используй /play, чтобы начать.")
+    bot.reply_to(message, "Помоги Саше не насадиться на член! Используй /play, чтобы начать.")
 
 @bot.message_handler(commands=['play'])
 def play_game(message):
     user_id = message.from_user.id
     username = message.from_user.username
-    
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    game_url = 'https://kirillqa17.github.io/IFlappy/'
+    web_app_info = telebot.types.WebAppInfo(url=game_url)
+    web_app_button = telebot.types.InlineKeyboardButton(text="Играть в игру", web_app=web_app_info)
+    keyboard.add(web_app_button)
     # Логика игры теперь выполняется в браузере, отправляем пользователю ссылку на игру
-    game_url = 'http://localhost:8000/index.html'  # Замените на действительный URL игры
-    bot.reply_to(message, f'Играй в игру по этой ссылке: {game_url}')
+
+    bot.reply_to(message,'Жми быстрее бля', reply_markup=keyboard)
 
 if __name__ == '__main__':
     bot.polling(none_stop=True)

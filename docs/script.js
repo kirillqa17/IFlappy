@@ -1,20 +1,23 @@
+Telegram.WebApp.ready();
+Telegram.WebApp.expand(); // Make the web app fullscreen
+
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 
 const birdImg = new Image();
-birdImg.src = 'images/sasha.jpg';  // Вставьте URL вашего изображения птицы
+birdImg.src = 'images/sasha.jpg';
 
 const pipeNorthImg = new Image();
-pipeNorthImg.src = 'images/chlen_vniz.jpg';  // Вставьте URL вашего изображения верхней трубы
+pipeNorthImg.src = 'images/chlen_vniz.jpg';
 
 const pipeSouthImg = new Image();
-pipeSouthImg.src = 'images/chlen_vverh.jpg';  // Вставьте URL вашего изображения нижней трубы
+pipeSouthImg.src = 'images/chlen_vverh.jpg';
 
 const bird = {
     x: 50,
     y: 150,
-    width: 44,  // Уменьшение размера птицы
-    height: 34,  // Уменьшение размера птицы
+    width: 44,
+    height: 34,
     gravity: 0.25,
     lift: -5,
     velocity: 0
@@ -28,16 +31,10 @@ let frame = 0;
 let score = 0;
 
 function draw() {
-    // Очистка холста и рисование игровых элементов здесь
-
-    // Ваш текущий код рисования и обновления игры здесь
-
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Рисование птицы
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
 
-    // Обновление позиции птицы
     bird.velocity += bird.gravity;
     bird.y += bird.velocity;
 
@@ -61,12 +58,9 @@ function draw() {
             score++;
         }
 
-        // Верхняя труба
         context.drawImage(pipeNorthImg, pipes[i].x, pipes[i].y, pipeWidth, canvas.height);
-        // Нижняя труба
         context.drawImage(pipeSouthImg, pipes[i].x, pipes[i].y + canvas.height + gap, pipeWidth, canvas.height);
 
-        // Проверка столкновений
         if (
             bird.x + bird.width > pipes[i].x &&
             bird.x < pipes[i].x + pipeWidth &&
@@ -81,12 +75,8 @@ function draw() {
     context.fillText("Score: " + score, 10, 20);
 
     frame++;
-
-    // Вызываем draw с задержкой, чтобы ограничить частоту кадров до 60 FPS
     setTimeout(draw, 1000 / 60);
 }
-
-
 
 function resetGame() {
     bird.y = 150;
