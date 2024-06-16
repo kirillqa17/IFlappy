@@ -1,5 +1,5 @@
 Telegram.WebApp.ready();
-Telegram.WebApp.expand(); // Make the web app fullscreen
+Telegram.WebApp.expand();
 
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
@@ -22,7 +22,6 @@ pipeSouthImg.src = 'images/chlen_vverh.jpg';
 backgroundImg.src = 'images/fon.png';
 smokeImg.src = 'images/smoke.png';
 
-// Add error handling for images
 for (let img of [birdImg, birdFlapImg, pipeNorthImg, pipeSouthImg, backgroundImg, smokeImg]) {
     img.onerror = () => {
         console.error(`Failed to load image: ${img.src}`);
@@ -50,7 +49,7 @@ let gameStarted = false;
 let birdFlap = false;
 let gameInterval;
 
-const backgroundSpeed = 2; // Скорость движения фона
+const backgroundSpeed = 2;
 let backgroundX = 0;
 
 function resizeCanvas() {
@@ -76,7 +75,6 @@ function startGame() {
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw background
     backgroundX -= backgroundSpeed;
     if (backgroundX <= -canvas.width) {
         backgroundX = 0;
@@ -85,7 +83,6 @@ function draw() {
     context.drawImage(backgroundImg, backgroundX, 0, canvas.width, canvas.height);
     context.drawImage(backgroundImg, backgroundX + canvas.width, 0, canvas.width, canvas.height);
 
-    // Draw bird with flapping wings effect
     if (birdFlap) {
         context.drawImage(birdFlapImg, bird.x, bird.y, bird.width, bird.height);
     } else {
@@ -130,12 +127,11 @@ function draw() {
         }
     }
 
-    // Draw smokes
     for (let i = 0; i < smokes.length; i++) {
         context.globalAlpha = smokes[i].opacity;
         context.drawImage(smokeImg, smokes[i].x, smokes[i].y, 50, 50);
         smokes[i].y += smokes[i].vy;
-        smokes[i].opacity -= 0.01; // Adjust the speed of fading out
+        smokes[i].opacity -= 0.01;
         if (smokes[i].opacity <= 0) {
             smokes.splice(i, 1);
         }
@@ -148,11 +144,12 @@ function draw() {
 function triggerGameOver() {
     gameStarted = false;
     clearInterval(gameInterval);
-    setTimeout(gameOver, 1000); // Добавляем задержку, чтобы смоки успели показаться
+    sendGameResult(score);
+    setTimeout(gameOver, 1000);
 }
 
 function gameOver() {
-    messageDiv.textContent = "Вы посадили Сашу на хуй\nВаш счет: " + score;
+    messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
     messageDiv.style.display = "block";
     restartButton.style.display = "block";
     scoreBackground.style.display = "none";
@@ -168,55 +165,66 @@ function resetGame() {
     birdFlap = false;
     messageDiv.style.display = "none";
     restartButton.style.display = "none";
-    startCountdown();
+    startGame();
 }
 
-function startCountdown() {
-    let countdown = 3;
-    messageDiv.textContent = countdown;
-    messageDiv.style.display = "block";
-    messageDiv.style.backgroundColor = "rgba(0, 0, 0, 0.5)";  // Добавьте этот стиль
-
-    const countdownInterval = setInterval(() => {
-        countdown--;
-        if (countdown <= 0) {
-            clearInterval(countdownInterval);
-            messageDiv.style.display = "none";
-            startGame();
-        } else {
-            messageDiv.textContent = countdown;
-        }
-    }, 1000);
-}
-
-canvas.addEventListener('click', () => {
-    if (gameStarted) {
+document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && gameStarted) {
         bird.velocity = bird.lift;
         birdFlap = true;
-        smokes.push({
-            x: bird.x,
-            y: bird.y + bird.height,
-            opacity: 1,
-            vy: 2
-        });
-        setTimeout(() => birdFlap = false, 200);
-    }
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && gameStarted) {
-        bird.velocity = bird.lift;
-        birdFlap = true;
-        smokes.push({
-            x: bird.x,
-            y: bird.y + bird.height,
-            opacity: 1,
-            vy: 2
-        });
-        setTimeout(() => birdFlap = false, 200);
+        setTimeout(() => birdFlap = false, 100);
+        smokes.push({ x: bird.x, y: bird.y, vy: bird.velocity, opacity: 0.5 });
     }
 });
 
 restartButton.addEventListener('click', resetGame);
 
-startCountdown();
+function sendGameResult(score) {
+    const userId = Telegram.WebApp.initDataUnsafe.user.id;
+    const url = `http://localhost:5000/send_result/${userId}`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ score: score })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            console.log('Result sent successfully');
+        } else {
+            console.error('Failed to send result');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Новая функция для отображения меню
+function showMenu() {
+    const userId = Telegram.WebApp.initDataUnsafe.user.id;
+    const url = `http://localhost:5000/get_total_score/${userId}`;
+    
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        const totalScore = data.total_score;
+        messageDiv.innerHTML = `
+            <div style="text-align: center; margin-top: 20%;">
+                <h1>${Telegram.WebApp.initDataUnsafe.user.username}</h1>
+                <h2>Общие очки: ${totalScore}</h2>
+                <button id="playButton">Играть</button>
+            </div>
+        `;
+        messageDiv.style.display = "block";
+        document.getElementById('playButton').addEventListener('click', () => {
+            messageDiv.style.display = "none";
+            startGame();
+        });
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Показ меню при загрузке
+showMenu();
