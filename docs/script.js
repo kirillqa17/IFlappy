@@ -3,6 +3,8 @@ Telegram.WebApp.expand(); // Make the web app fullscreen
 
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
+const messageDiv = document.getElementById('message');
+const restartButton = document.getElementById('restartButton');
 
 const birdImg = new Image();
 birdImg.src = 'images/sasha.jpg';  // Вставьте URL вашего изображения птицы
@@ -28,6 +30,7 @@ const gap = 200;
 
 let frame = 0;
 let score = 0;
+let gameStarted = false;
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -37,7 +40,19 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
+function startGame() {
+    gameStarted = true;
+    frame = 0;
+    score = 0;
+    pipes.length = 0;
+    bird.y = 150;
+    bird.velocity = 0;
+    draw();
+}
+
 function draw() {
+    if (!gameStarted) return;
+    
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
@@ -46,7 +61,8 @@ function draw() {
     bird.y += bird.velocity;
 
     if (bird.y + bird.height > canvas.height || bird.y < 0) {
-        resetGame();
+        gameOver();
+        return;
     }
 
     if (frame % 250 === 0) {
@@ -73,7 +89,8 @@ function draw() {
             bird.x < pipes[i].x + pipeWidth &&
             (bird.y < pipes[i].y + canvas.height || bird.y + bird.height > pipes[i].y + canvas.height + gap)
         ) {
-            resetGame();
+            gameOver();
+            return;
         }
     }
 
@@ -82,7 +99,14 @@ function draw() {
     context.fillText("Score: " + score, 10, 20);
 
     frame++;
-    setTimeout(draw, 1000 / 90);
+    setTimeout(draw, 1000 / 60);
+}
+
+function gameOver() {
+    gameStarted = false;
+    messageDiv.textContent = "Вы посадили Сашу на хуй";
+    messageDiv.style.display = "block";
+    restartButton.style.display = "block";
 }
 
 function resetGame() {
@@ -91,16 +115,40 @@ function resetGame() {
     pipes.length = 0;
     score = 0;
     frame = 0;
+    messageDiv.style.display = "none";
+    restartButton.style.display = "none";
+    startCountdown();
+}
+
+function startCountdown() {
+    let countdown = 3;
+    messageDiv.textContent = countdown;
+    messageDiv.style.display = "block";
+    
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            messageDiv.style.display = "none";
+            startGame();
+        } else {
+            messageDiv.textContent = countdown;
+        }
+    }, 1000);
 }
 
 canvas.addEventListener('click', () => {
-    bird.velocity = bird.lift;
-});
-
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') {
+    if (gameStarted) {
         bird.velocity = bird.lift;
     }
 });
 
-draw();
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && gameStarted) {
+        bird.velocity = bird.lift;
+    }
+});
+
+restartButton.addEventListener('click', resetGame);
+
+startCountdown();
