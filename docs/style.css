@@ -1,75 +1,105 @@
+
 body, html {
     margin: 0;
     padding: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+
+#menu {
+    background-color: black;
+    color: white; 
+    text-align: center;
+    padding: 20px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    background-color: #87CEEB; /* Голубой фон */
+}
+
+#totalScore {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#playButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: white;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#playButton:hover {
+    background-color: grey;
+    color: white;
 }
 
 #gameContainer {
     position: relative;
+    display: none;
+    width: 100%;
+    height: 100%;
 }
 
 #gameCanvas {
     display: block;
-    background-color: #87CEEB;
+    width: 100%;
+    height: 100%;
 }
 
+
 #message {
+    display: none;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    margin-top: 20px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.5); /* Сделаем фон аналогичным фону для счёта */
-    color: white;
+    background-color: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 10px;
-    font-size: 24px;
-    text-align: center;
-    display: none;
-    z-index: 1;
 }
 
 #restartButton {
-    position: absolute;
-    top: 70%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    display: none;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 18px;
     background-color: white;
     color: black;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 18px;
-    display: none;
-    z-index: 1;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
 }
+
+#restartButton:hover {
+    background-color: grey;
+    color: white;
+}
+
 
 #scoreBackground {
     position: absolute;
     top: 10px;
-    left: 10px;
-    background-color: rgba(0, 0, 0, 0.5); /* Прозрачный чёрный фон */
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 5px 10px;
+    padding: 10px;
     border-radius: 5px;
-    font-size: 20px;
-    z-index: 1;
-}
-
-#message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    font-size: 24px;
-    text-align: center;
+    font-size: 18px;
     display: none;
-    z-index: 1;
 }

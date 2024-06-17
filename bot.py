@@ -1,95 +1,92 @@
 import os
-from flask import Flask, request, jsonify
-import psycopg2
+import logging
 from dotenv import load_dotenv
 import telebot
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from threading import Thread
+from datetime import datetime
 
+# Загрузите переменные окружения
 load_dotenv()
 
-app = Flask(__name__)
-
-# Настройки Telegram
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-bot = telebot.TeleBot(TELEGRAM_TOKEN)
-
-# Настройки базы данных
-DB_HOST = os.getenv('DB_HOST')
+API_TOKEN = os.getenv('TELEGRAM_TOKEN')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
 
-# Подключение к базе данных
-conn = psycopg2.connect(
-    host=DB_HOST,
-    database=DB_NAME,
-    user=DB_USER,
-    password=DB_PASSWORD
-)
+if not API_TOKEN:
+    raise ValueError("No API token provided. Set the TELEGRAM_TOKEN environment variable.")
 
-def create_user(user_id, username):
-    with conn.cursor() as cursor:
-        cursor.execute("""
-            INSERT INTO game_results (user_id, username, total_score)
-            VALUES (%s, %s, 0)
-            ON CONFLICT (user_id) DO NOTHING
-        """, (user_id, username))
-        conn.commit()
+bot = telebot.TeleBot(API_TOKEN)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+db = SQLAlchemy(app)
 
-def update_game_result(user_id, score):
-    with conn.cursor() as cursor:
-        cursor.execute("""
-            UPDATE game_results
-            SET total_score = total_score + %s, timestamp = NOW()
-            WHERE user_id = %s
-        """, (score, user_id))
-        conn.commit()
+# Настройка логирования
+logging.basicConfig(level=logging.DEBUG)
+
+class GameResult(db.Model):
+    __tablename__ = 'game_results'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    username = db.Column(db.String, nullable=False)
+    score = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    total_score = db.Column(db.Integer, nullable=False, default=0)
+
+    def __init__(self, user_id, username, score, total_score):
+        self.user_id = user_id
+        self.username = username
+        self.score = score
+        self.total_score = total_score
 
 def get_total_score(user_id):
-    with conn.cursor() as cursor:
-        cursor.execute("""
-            SELECT total_score
-            FROM game_results
-            WHERE user_id = %s
-        """, (user_id,))
-        result = cursor.fetchone()
-        return result[0] if result else 0
+    result = db.session.query(GameResult.total_score).filter(GameResult.user_id == user_id).order_by(GameResult.timestamp.desc()).first()
+    return result.total_score if result else 0
 
-@app.route('/send_result/<user_id>', methods=['POST'])
-def send_result(user_id):
-    data = request.get_json()
-    score = data['score']
-    update_game_result(user_id, score)
-    return jsonify({'status': 'success'})
+def save_game_result(user_id, username, score):
+    total_score = get_total_score(user_id) + score
+    new_result = GameResult(user_id=user_id, username=username, score=score, total_score=total_score)
+    db.session.add(new_result)
+    db.session.commit()
 
-@app.route('/get_total_score/<user_id>', methods=['GET'])
-def get_total_score_route(user_id):
-    total_score = get_total_score(user_id)
-    return jsonify({'total_score': total_score})
+@app.route('/get_total_score/<int:user_id>', methods=['GET'])
+def handle_get_total_score(user_id):
+    try:
+        total_score = get_total_score(user_id)
+        return jsonify({"total_score": total_score})
+    except Exception as e:
+        app.logger.error(f"Error fetching total score for user_id {user_id}: {e}")
+        return jsonify({"error": str(e)}), 500
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    user_id = message.from_user.id
-    username = message.from_user.username
-    create_user(user_id, username)
-    bot.reply_to(message, "Помоги Саше не насадиться на член! Используй /play, чтобы начать.")
+@app.route('/send_result/<int:user_id>/<username>', methods=['POST'])
+def handle_send_result(user_id, username):
+    try:
+        data = request.get_json()
+        score = data['score']
+        save_game_result(user_id, username, score)
+        return jsonify({"status": "success"})
+    except Exception as e:
+        app.logger.error(f"Error saving game result for user_id {user_id}: {e}")
+        return jsonify({"error": str(e)}), 500
 
-@bot.message_handler(commands=['play'])
-def play_game(message):
-    user_id = message.from_user.id
-    username = message.from_user.username
-    keyboard = telebot.types.InlineKeyboardMarkup()
-    game_url = 'https://kirillqa17.github.io/IFlappy/'
-    web_app_info = telebot.types.WebAppInfo(url=game_url)
-    web_app_button = telebot.types.InlineKeyboardButton(text="Играть в игру", web_app=web_app_info)
-    keyboard.add(web_app_button)
-
-    bot.reply_to(message, 'Жми быстрее бля', reply_markup=keyboard)
-
-def start_bot():
-    bot.polling()
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
-    bot_thread = Thread(target=start_bot)
-    bot_thread.start()
-    app.run(host='0.0.0.0', port=5000)
+    # Создайте таблицы в базе данных
+    with app.app_context():
+        db.create_all()
+
+    flask_thread = Thread(target=run_flask)
+    flask_thread.start()
+
+    try:
+        bot.polling(none_stop=True)
+    except telebot.apihelper.ApiTelegramException as e:
+        print(f"Telegram API error: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")

@@ -1,6 +1,3 @@
-Telegram.WebApp.ready();
-Telegram.WebApp.expand();
-
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 const messageDiv = document.getElementById('message');
@@ -70,6 +67,8 @@ function startGame() {
     bird.velocity = 0;
     scoreBackground.style.display = 'block';
     gameInterval = setInterval(draw, 1000 / 60);
+    menu.style.display = 'none';
+    gameContainer.style.display = 'block';
 }
 
 function draw() {
@@ -182,7 +181,7 @@ restartButton.addEventListener('click', resetGame);
 function sendGameResult(score) {
     const userId = Telegram.WebApp.initDataUnsafe.user.id;
     const url = `http://localhost:5000/send_result/${userId}`;
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -200,31 +199,3 @@ function sendGameResult(score) {
     })
     .catch(error => console.error('Error:', error));
 }
-
-// Новая функция для отображения меню
-function showMenu() {
-    const userId = Telegram.WebApp.initDataUnsafe.user.id;
-    const url = `http://localhost:5000/get_total_score/${userId}`;
-    
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        const totalScore = data.total_score;
-        messageDiv.innerHTML = `
-            <div style="text-align: center; margin-top: 20%;">
-                <h1>${Telegram.WebApp.initDataUnsafe.user.username}</h1>
-                <h2>Общие очки: ${totalScore}</h2>
-                <button id="playButton">Играть</button>
-            </div>
-        `;
-        messageDiv.style.display = "block";
-        document.getElementById('playButton').addEventListener('click', () => {
-            messageDiv.style.display = "none";
-            startGame();
-        });
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-// Показ меню при загрузке
-showMenu();
