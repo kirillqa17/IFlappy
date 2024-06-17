@@ -86,7 +86,6 @@ function startGame() {
     bird.velocity = 0;
     scoreBackground.style.display = 'block';
     gameInterval = setInterval(draw, 1000 / 60);
-    menuButton.style.display = 'none';
     messageDiv.style.display = 'none';
 }
 
