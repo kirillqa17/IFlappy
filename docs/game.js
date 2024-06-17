@@ -1,3 +1,4 @@
+// Initialize game variables
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 const messageDiv = document.getElementById('message');
@@ -5,26 +6,6 @@ const restartButton = document.getElementById('restartButton');
 const menuButton = document.getElementById('menuButton');
 const scoreBackground = document.getElementById('scoreBackground');
 const scoreSpan = document.getElementById('score');
-
-const birdImg = new Image();
-const birdFlapImg = new Image();
-const pipeNorthImg = new Image();
-const pipeSouthImg = new Image();
-const backgroundImg = new Image();
-const smokeImg = new Image();
-
-birdImg.src = 'images/sasha.jpg';
-birdFlapImg.src = 'images/sasha_flap.jpg';
-pipeNorthImg.src = 'images/chlen_vniz.jpg';
-pipeSouthImg.src = 'images/chlen_vverh.jpg';
-backgroundImg.src = 'images/fon.png';
-smokeImg.src = 'images/smoke.png';
-
-for (let img of [birdImg, birdFlapImg, pipeNorthImg, pipeSouthImg, backgroundImg, smokeImg]) {
-    img.onerror = () => {
-        console.error(`Failed to load image: ${img.src}`);
-    };
-}
 
 const bird = {
     x: 50,
@@ -130,7 +111,7 @@ function draw() {
     for (let i = 0; i < smokes.length; i++) {
         context.globalAlpha = smokes[i].opacity;
         context.drawImage(smokeImg, smokes[i].x, smokes[i].y, 50, 50);
-        smokes[i].x -= smokes[i].vx;  // Добавляем смещение по x
+        smokes[i].x -= smokes[i].vx;
         smokes[i].y -= smokes[i].vy;
         smokes[i].opacity -= 0.01;
         if (smokes[i].opacity <= 0) {
@@ -182,7 +163,7 @@ document.addEventListener('keydown', (event) => {
         bird.velocity = bird.lift;
         birdFlap = true;
         setTimeout(() => birdFlap = false, 100);
-        smokes.push({ x: bird.x, y: bird.y, vx: 1, vy: bird.velocity, opacity: 1.0 });  // Добавляем vx
+        smokes.push({ x: bird.x, y: bird.y, vx: 1, vy: bird.velocity, opacity: 1.0 });
     }
 });
 
@@ -190,8 +171,8 @@ restartButton.addEventListener('click', resetGame);
 menuButton.addEventListener('click', goToMenu);
 
 function sendGameResult(score) {
-    const userId = window.userId;  // Используем значение из URL
-    const username = window.username;  // Используем значение из URL
+    const userId = window.userId;
+    const username = window.username;
 
     fetch(`http://localhost:5000/send_result/${userId}/${username}`, {
         method: 'POST',
@@ -202,7 +183,11 @@ function sendGameResult(score) {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Game result sent successfully:', data);
+        if (data.status === 'success') {
+            console.log('Game result sent successfully:', data);
+        } else {
+            console.error('Error sending game result:', data.error);
+        }
     })
     .catch((error) => {
         console.error('Error sending game result:', error);
