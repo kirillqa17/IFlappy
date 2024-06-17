@@ -10,14 +10,15 @@
 </head>
 <body>
     <div id="menu" style="background-color: black;">
-        <h1 id="totalScore">Total Score: 0</h1>
+        <h1 id="totalScore">Total Score:</h1>
         <button id="playButton">Play</button>
     </div>
     <div id="gameContainer" style="display: none;">
         <canvas id="gameCanvas"></canvas>
         <div id="message"></div>
         <button id="restartButton">Играть заново</button>
-        <div id="scoreBackground">Score: <span id="score">0</span></div>
+        <button id="menuButton">Выйти в меню</button>
+        <div id="scoreBackground">Score: <span id="score"></span></div>
     </div>
     <script>
         function getUrlParameter(name) {

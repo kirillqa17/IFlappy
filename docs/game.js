@@ -2,6 +2,7 @@ const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
 const messageDiv = document.getElementById('message');
 const restartButton = document.getElementById('restartButton');
+const menuButton = document.getElementById('menuButton');
 const scoreBackground = document.getElementById('scoreBackground');
 const scoreSpan = document.getElementById('score');
 
@@ -129,7 +130,8 @@ function draw() {
     for (let i = 0; i < smokes.length; i++) {
         context.globalAlpha = smokes[i].opacity;
         context.drawImage(smokeImg, smokes[i].x, smokes[i].y, 50, 50);
-        smokes[i].y += smokes[i].vy;
+        smokes[i].x -= smokes[i].vx;  // Добавляем смещение по x
+        smokes[i].y -= smokes[i].vy;
         smokes[i].opacity -= 0.01;
         if (smokes[i].opacity <= 0) {
             smokes.splice(i, 1);
@@ -151,6 +153,7 @@ function gameOver() {
     messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
     messageDiv.style.display = "block";
     restartButton.style.display = "block";
+    menuButton.style.display = "block";
     scoreBackground.style.display = "none";
 }
 
@@ -164,7 +167,14 @@ function resetGame() {
     birdFlap = false;
     messageDiv.style.display = "none";
     restartButton.style.display = "none";
+    menuButton.style.display = "none";
     startGame();
+}
+
+function goToMenu() {
+    gameContainer.style.display = 'none';
+    document.getElementById('menu').style.display = 'block';
+    loadScript('menu.js');
 }
 
 document.addEventListener('keydown', (event) => {
@@ -172,11 +182,12 @@ document.addEventListener('keydown', (event) => {
         bird.velocity = bird.lift;
         birdFlap = true;
         setTimeout(() => birdFlap = false, 100);
-        smokes.push({ x: bird.x, y: bird.y, vy: bird.velocity, opacity: 0.5 });
+        smokes.push({ x: bird.x, y: bird.y, vx: 1, vy: bird.velocity, opacity: 1.0 });  // Добавляем vx
     }
 });
 
 restartButton.addEventListener('click', resetGame);
+menuButton.addEventListener('click', goToMenu);
 
 function sendGameResult(score) {
     const userId = window.userId;  // Используем значение из URL
