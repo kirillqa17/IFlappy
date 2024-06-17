@@ -16,10 +16,13 @@
     <div id="gameContainer" style="display: none;">
         <canvas id="gameCanvas"></canvas>
         <div id="message"></div>
-        <button id="restartButton">Играть заново</button>
-        <button id="menuButton">Выйти в меню</button>
+        <div id="buttonsContainer">
+            <button id="restartButton">Играть заново</button>
+            <button id="menuButton">Выйти в меню</button>
+        </div>
         <div id="scoreBackground">Score: <span id="score">0</span></div>
-    </div>       
+    </div>
+         
     <script>
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

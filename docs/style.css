@@ -70,8 +70,17 @@ body, html {
     border-radius: 10px;
 }
 
+#buttonsContainer {
+    position: absolute;
+    top: 60%; /* Позиция контейнера по вертикали */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Скрываем контейнер по умолчанию */
+    text-align: center;
+}
+
 #restartButton, #menuButton {
-    margin: 10px auto;
+    margin: 10px;
     padding: 10px 20px;
     font-size: 18px;
     background-color: white;
@@ -80,11 +89,6 @@ body, html {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
-    display: none; /* Убедимся, что кнопки скрыты по умолчанию */
-    position: absolute; /* Убедимся, что они располагаются по центру */
-    left: 50%;
-    transform: translateX(-50%);
-    top: 60%; /* Позиция относительно экрана */
 }
 
 #restartButton:hover, #menuButton:hover {
