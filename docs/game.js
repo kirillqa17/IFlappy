@@ -1,3 +1,41 @@
+// Get user details from URL
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get('user_id');
+const username = urlParams.get('username');
+
+// Check if userId and username are present
+if (!userId || !username) {
+    console.error('User ID or username is missing from URL parameters.');
+    alert('User ID or username is missing from URL parameters.');
+}
+
+// Store user details globally
+window.userId = userId;
+window.username = username;
+
+const birdImg = new Image();
+const birdFlapImg = new Image();
+const pipeNorthImg = new Image();
+const pipeSouthImg = new Image();
+const backgroundImg = new Image();
+const smokeImg = new Image();
+
+const images = [
+    { img: birdImg, src: 'images/sasha.jpg' },
+    { img: birdFlapImg, src: 'images/sasha_flap.jpg' },
+    { img: pipeNorthImg, src: 'images/chlen_vniz.jpg' },
+    { img: pipeSouthImg, src: 'images/chlen_vverh.jpg' },
+    { img: backgroundImg, src: 'images/fon.png' },
+    { img: smokeImg, src: 'images/smoke.png' }
+];
+
+images.forEach(({ img, src }) => {
+    img.src = src;
+    img.onerror = () => {
+        console.error(`Failed to load image: ${src}`);
+    };
+});
+
 // Initialize game variables
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
@@ -49,8 +87,8 @@ function startGame() {
     bird.velocity = 0;
     scoreBackground.style.display = 'block';
     gameInterval = setInterval(draw, 1000 / 60);
-    menu.style.display = 'none';
-    gameContainer.style.display = 'block';
+    menuButton.style.display = 'none';
+    messageDiv.style.display = 'none';
 }
 
 function draw() {
