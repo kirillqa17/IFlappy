@@ -23,7 +23,8 @@ body, html {
 
 #totalScore {
     font-size: 24px;
-    margin-bottom: 20px;
+    top: 60%; 
+    left: 50%;
 }
 
 #playButton {
