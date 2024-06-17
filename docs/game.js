@@ -20,22 +20,18 @@ const pipeSouthImg = new Image();
 const backgroundImg = new Image();
 const smokeImg = new Image();
 
-const images = [
-    { img: birdImg, src: 'images/sasha.jpg' },
-    { img: birdFlapImg, src: 'images/sasha_flap.jpg' },
-    { img: pipeNorthImg, src: 'images/chlen_vniz.jpg' },
-    { img: pipeSouthImg, src: 'images/chlen_vverh.jpg' },
-    { img: backgroundImg, src: 'images/fon.png' },
-    { img: smokeImg, src: 'images/smoke.png' }
-];
+birdImg.src = 'images/sasha.jpg';
+birdFlapImg.src = 'images/sasha_flap.jpg';
+pipeNorthImg.src = 'images/chlen_vniz.jpg';
+pipeSouthImg.src = 'images/chlen_vverh.jpg';
+backgroundImg.src = 'images/fon.png';
+smokeImg.src = 'images/smoke.png';
 
-images.forEach(({ img, src }) => {
-    img.src = src;
+for (let img of [birdImg, birdFlapImg, pipeNorthImg, pipeSouthImg, backgroundImg, smokeImg]) {
     img.onerror = () => {
-        console.error(`Failed to load image: ${src}`);
+        console.error("Failed to load image: ${img.src}");
     };
-});
-
+}
 // Initialize game variables
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
