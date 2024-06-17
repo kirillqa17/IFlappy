@@ -41,7 +41,8 @@ const menuButton = document.getElementById('menuButton');
 const scoreBackground = document.getElementById('scoreBackground');
 const scoreSpan = document.getElementById('score');
 const gameContainer = document.getElementById('gameContainer');
-const buttonsContainer = document.getElementById('buttonsContainer');
+const restartButtonContainer = document.getElementById('restartButtonContainer');
+const menuButtonContainer = document.getElementById('menuButtonContainer');
 
 const bird = {
     x: 50,
@@ -169,7 +170,8 @@ function triggerGameOver() {
 function gameOver() {
     messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
     messageDiv.style.display = "block";
-    buttonsContainer.style.display = "block"; // Показываем контейнер с кнопками
+    restartButtonContainer.style.display = "block";
+    menuButtonContainer.style.display = "block";
     scoreBackground.style.display = "none";
 }
 

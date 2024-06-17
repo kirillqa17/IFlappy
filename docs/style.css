@@ -70,7 +70,16 @@ body, html {
     border-radius: 10px;
 }
 
-#buttonsContainer {
+#restartButtonContainer {
+    position: absolute;
+    top: 60%; /* Позиция контейнера по вертикали */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none; /* Скрываем контейнер по умолчанию */
+    text-align: center;
+}
+
+#menuButtonContainer {
     position: absolute;
     top: 60%; /* Позиция контейнера по вертикали */
     left: 50%;
