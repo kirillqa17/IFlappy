@@ -184,13 +184,15 @@ function resetGame() {
     frame = 0;
     birdFlap = false;
     messageDiv.style.display = "none";
-    buttonsContainer.style.display = "none";
+    restartButtonContainer.style.display = "none";
+    menuButtonContainer.style.display = "none";
     startGame();
 }
 
 function goToMenu() {
     gameContainer.style.display = 'none';
     document.getElementById('menu').style.display = 'block';
+    loadScript('menu.js');
 }
 
 restartButton.addEventListener('click', resetGame);
