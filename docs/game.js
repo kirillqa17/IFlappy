@@ -219,6 +219,8 @@ function sendGameResult(score) {
     .then(data => {
         if (data.status === 'success') {
             console.log('Game result sent successfully:', data);
+        } else if (data.status === 'update') {
+            console.log('Game result updated successfully:', data);
         } else {
             console.error('Error sending game result:', data.error);
         }
@@ -227,5 +229,6 @@ function sendGameResult(score) {
         console.error('Error sending game result:', error);
     });
 }
+
 
 startGame();
