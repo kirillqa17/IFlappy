@@ -78,15 +78,25 @@ def handle_get_total_score(user_id):
 
 @app.route('/send_result/<int:user_id>/<username>', methods=['POST'])
 def handle_send_result(user_id, username):
+    data = request.get_json()
+    score = data.get('score')
+
     try:
-        data = request.get_json()
-        app.logger.debug(f"Received data: {data}")
-        score = data['score']
-        save_game_result(user_id, username, score)
-        return jsonify({"status": "success"})
+        result = GameResult.query.filter_by(user_id=user_id).first()
+        if result:
+            result.score = score
+            result.timestamp = datetime.now()
+            result.total_score += score
+            db.session.commit()
+            return jsonify(status='update', message='Game result updated successfully')
+        else:
+            new_result = GameResult(user_id=user_id, username=username, score=score, timestamp=datetime.now(), total_score=score)
+            db.session.add(new_result)
+            db.session.commit()
+            return jsonify(status='success', message='Game result sent successfully')
     except Exception as e:
-        app.logger.error(f"Error saving game result for user_id {user_id} with data {data}: {e}")
-        return jsonify({"error": str(e)}), 500
+        db.session.rollback()
+        return jsonify(status='error', error=str(e))
 
 def run_flask():
     app.run(host='0.0.0.0', port=5000)
@@ -111,10 +121,10 @@ def play_game(message):
 
     keyboard = telebot.types.InlineKeyboardMarkup()
     web_app_info = telebot.types.WebAppInfo(url=game_url)
-    web_app_button = telebot.types.InlineKeyboardButton(text="Играть в игру", web_app=web_app_info)
+    web_app_button = telebot.types.InlineKeyboardButton(text="Быстрее жми, Саша умоляет. ну пожалуйста", web_app=web_app_info)
     keyboard.add(web_app_button)
 
-    bot.reply_to(message, 'Жми быстрее бля', reply_markup=keyboard)
+    bot.reply_to(message, "Самое главное не посади его на хуй(или посади)", reply_markup = keyboard)
 
 if __name__ == '__main__':
     # Create tables in the database
