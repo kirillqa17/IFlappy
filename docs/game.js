@@ -197,6 +197,11 @@ function goToMenu() {
 restartButton.addEventListener('click', resetGame);
 menuButton.addEventListener('click', goToMenu);
 
+canvas.addEventListener('click', () => {
+    if (gameStarted) {
+        bird.velocity = bird.lift;
+    }
+});
 
 document.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && gameStarted) {
@@ -206,9 +211,6 @@ document.addEventListener('keydown', (event) => {
         smokes.push({ x: bird.x, y: bird.y, vx: 1, vy: bird.velocity, opacity: 1.0 });
     }
 });
-
-restartButton.addEventListener('click', resetGame);
-menuButton.addEventListener('click', goToMenu);
 
 function sendGameResult(score) {
     const userId = window.userId;

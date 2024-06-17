@@ -81,7 +81,7 @@ body, html {
 
 #menuButtonContainer {
     position: absolute;
-    top: 60%; /* Позиция контейнера по вертикали */
+    top: 65%; /* Позиция контейнера по вертикали */
     left: 50%;
     transform: translate(-50%, -50%);
     display: none; /* Скрываем контейнер по умолчанию */
