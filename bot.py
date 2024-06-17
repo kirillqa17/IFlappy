@@ -53,6 +53,13 @@ def save_game_result(user_id, username, score):
     db.session.add(new_result)
     db.session.commit()
 
+def create_user(user_id, username):
+    existing_user = db.session.query(GameResult).filter(GameResult.user_id == user_id).first()
+    if not existing_user:
+        new_user = GameResult(user_id=user_id, username=username, score=0, total_score=0)
+        db.session.add(new_user)
+        db.session.commit()
+
 @app.route('/get_total_score/<int:user_id>', methods=['GET'])
 def handle_get_total_score(user_id):
     try:
@@ -75,6 +82,30 @@ def handle_send_result(user_id, username):
 
 def run_flask():
     app.run(host='0.0.0.0', port=5000)
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    create_user(user_id, username)
+    
+    keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+    keyboard.add(telebot.types.KeyboardButton('/play'))
+    
+    bot.send_message(message.chat.id, "Помоги Саше не насадиться на член! Используй /play, чтобы начать.", reply_markup=keyboard)
+
+@bot.message_handler(commands=['play'])
+def play_game(message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    game_url = f"https://yourdomain.com/index.html?user_id={user_id}&username={username}"  # Замените на ваш фактический URL
+    
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    web_app_info = telebot.types.WebAppInfo(url=game_url)
+    web_app_button = telebot.types.InlineKeyboardButton(text="Играть в игру", web_app=web_app_info)
+    keyboard.add(web_app_button)
+
+    bot.reply_to(message, 'Жми быстрее бля', reply_markup=keyboard)
 
 if __name__ == '__main__':
     # Создайте таблицы в базе данных

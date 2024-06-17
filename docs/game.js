@@ -179,10 +179,10 @@ document.addEventListener('keydown', (event) => {
 restartButton.addEventListener('click', resetGame);
 
 function sendGameResult(score) {
-    const userId = Telegram.WebApp.initDataUnsafe.user.id;
-    const url = `http://localhost:5000/send_result/${userId}`;
+    const userId = window.userId;  // Используем значение из URL
+    const username = window.username;  // Используем значение из URL
 
-    fetch(url, {
+    fetch(`http://localhost:5000/send_result/${userId}/${username}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -191,11 +191,11 @@ function sendGameResult(score) {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status === 'success') {
-            console.log('Result sent successfully');
-        } else {
-            console.error('Failed to send result');
-        }
+        console.log('Game result sent successfully:', data);
     })
-    .catch(error => console.error('Error:', error));
+    .catch((error) => {
+        console.error('Error sending game result:', error);
+    });
 }
+
+startGame();

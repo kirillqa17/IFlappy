@@ -6,12 +6,7 @@ const playButton = document.getElementById('playButton');
 const totalScoreElement = document.getElementById('totalScore');
 
 function fetchTotalScore() {
-    const userId = Telegram.WebApp.initDataUnsafe.user?.id;
-    if (!userId) {
-        console.error('User ID not found. Make sure Telegram.WebApp.initDataUnsafe.user is correctly initialized.');
-        return;
-    }
-
+    const userId = window.userId;  // Используем значение из URL
     const url = `http://localhost:5000/get_total_score/${userId}`;
 
     fetch(url)
