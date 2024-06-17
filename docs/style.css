@@ -80,12 +80,14 @@ body, html {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+    display: none; 
 }
 
 #restartButton:hover, #menuButton:hover {
     background-color: grey;
     color: white;
 }
+
 
 #scoreBackground {
     position: absolute;

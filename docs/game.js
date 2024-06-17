@@ -164,13 +164,18 @@ function triggerGameOver() {
     setTimeout(gameOver, 1000);
 }
 
+// После завершения игры, показываем кнопки
 function gameOver() {
     messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
     messageDiv.style.display = "block";
-    restartButton.style.display = "block";
-    menuButton.style.display = "block";
+    restartButton.style.display = "block"; // Показываем кнопку
+    menuButton.style.display = "block";   // Показываем кнопку
     scoreBackground.style.display = "none";
 }
+
+// Функции для кнопок
+restartButton.addEventListener('click', resetGame);
+menuButton.addEventListener('click', goToMenu);
 
 function resetGame() {
     bird.y = 150;
@@ -191,6 +196,7 @@ function goToMenu() {
     document.getElementById('menu').style.display = 'block';
     loadScript('menu.js');
 }
+
 
 document.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && gameStarted) {
