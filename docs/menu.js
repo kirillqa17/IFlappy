@@ -4,6 +4,7 @@ Telegram.WebApp.expand();
 const menu = document.getElementById('menu');
 const playButton = document.getElementById('playButton');
 const totalScoreElement = document.getElementById('totalScore');
+const totalScoreNumber = document.getElementById('score_total');
 
 function fetchTotalScore() {
     const userId = window.userId;  // Используем значение из URL
@@ -12,7 +13,7 @@ function fetchTotalScore() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            totalScoreElement.textContent = `Total Score: ${data.total_score}`;
+            totalScoreNumber.textContent = `${data.total_score}`;
         })
         .catch(error => console.error('Error:', error));
 }

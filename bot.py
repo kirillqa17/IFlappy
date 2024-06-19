@@ -80,7 +80,6 @@ def handle_get_total_score(user_id):
 def handle_send_result(user_id, username):
     data = request.get_json()
     score = data.get('score')
-
     try:
         result = GameResult.query.filter_by(user_id=user_id).first()
         if result:

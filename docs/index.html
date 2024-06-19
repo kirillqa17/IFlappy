@@ -9,11 +9,11 @@
     <script src="menu.js" defer></script>
 </head>
 <body>
-    <div id="menu" style="background-color: black;">
-        <h1 id="totalScore">Total Score:</h1>
+    <div id="menu">
+        <h1 id="totalScore">Total Score: <span id = "score_total"></span></h1>
         <button id="playButton">Play</button>
     </div>
-    <div id="gameContainer" style="display: none;">
+    <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
         <div id="message"></div>
         <div id="restartButtonContainer">
@@ -24,7 +24,6 @@
         </div>
         <div id="scoreBackground">Score: <span id="score">0</span></div>
     </div>
-         
     <script>
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

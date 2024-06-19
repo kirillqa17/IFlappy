@@ -23,8 +23,7 @@ body, html {
 
 #totalScore {
     font-size: 24px;
-    top: 60%; 
-    left: 50%;
+    margin-bottom: 20px; /* Added margin for spacing */
 }
 
 #playButton {
@@ -71,22 +70,20 @@ body, html {
     border-radius: 10px;
 }
 
-#restartButtonContainer {
+#restartButtonContainer, #menuButtonContainer {
     position: absolute;
-    top: 60%; /* Позиция контейнера по вертикали */
     left: 50%;
-    transform: translate(-50%, -50%);
-    display: none; /* Скрываем контейнер по умолчанию */
+    transform: translateX(-50%);
+    display: none; /* Hide by default */
     text-align: center;
 }
 
+#restartButtonContainer {
+    top: 60%; /* Position of restart button */
+}
+
 #menuButtonContainer {
-    position: absolute;
-    top: 65%; /* Позиция контейнера по вертикали */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: none; /* Скрываем контейнер по умолчанию */
-    text-align: center;
+    top: 65%; /* Position of menu button, adjust if needed */
 }
 
 #restartButton, #menuButton {
@@ -105,8 +102,6 @@ body, html {
     background-color: grey;
     color: white;
 }
-
-
 
 #scoreBackground {
     position: absolute;
