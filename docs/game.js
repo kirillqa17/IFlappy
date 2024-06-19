@@ -1,14 +1,3 @@
-// Get user details from URL
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get('user_id');
-const username = urlParams.get('username');
-
-// Check if userId and username are present
-if (!userId || !username) {
-    console.error('User ID or username is missing from URL parameters.');
-    alert('User ID or username is missing from URL parameters.');
-}
-
 
 const birdImg = new Image();
 const birdFlapImg = new Image();
