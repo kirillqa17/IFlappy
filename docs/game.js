@@ -1,4 +1,3 @@
-
 const birdImg = new Image();
 const birdFlapImg = new Image();
 const pipeNorthImg = new Image();
