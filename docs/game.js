@@ -9,9 +9,6 @@ if (!userId || !username) {
     alert('User ID or username is missing from URL parameters.');
 }
 
-// Store user details globally
-window.userId = userId;
-window.username = username;
 
 const birdImg = new Image();
 const birdFlapImg = new Image();

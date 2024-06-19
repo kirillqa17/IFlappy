@@ -8,6 +8,11 @@ const username = urlParams.get('username');
 window.userId = userId;
 window.username = username;
 
+if (!userId || !username) {
+    console.error('User ID or username is missing from URL parameters.');
+    alert('User ID or username is missing from URL parameters.');
+}
+
 const menu = document.getElementById('menu');
 const playButton = document.getElementById('playButton');
 const totalScoreElement = document.getElementById('totalScore');
@@ -20,7 +25,7 @@ function fetchTotalScore() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            totalScore.textContent = data.total_score;
+            totalScoreNumber.textContent = data.total_score;
         })
         .catch(error => console.error('Error:', error));
 }
