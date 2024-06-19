@@ -1,6 +1,13 @@
 Telegram.WebApp.ready();
 Telegram.WebApp.expand();
 
+const urlParams = new URLSearchParams(window.location.search);
+const userId = urlParams.get('user_id');
+const username = urlParams.get('username');
+
+window.userId = userId;
+window.username = username;
+
 const menu = document.getElementById('menu');
 const playButton = document.getElementById('playButton');
 const totalScoreElement = document.getElementById('totalScore');
@@ -13,7 +20,7 @@ function fetchTotalScore() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            totalScore.textContent = '123';
+            totalScore.textContent = data.total_score;
         })
         .catch(error => console.error('Error:', error));
 }
