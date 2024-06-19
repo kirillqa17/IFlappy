@@ -9,7 +9,7 @@ body, html {
 
 #menu {
     background-color: black;
-    color: white; 
+    color: white;
     text-align: center;
     padding: 20px;
     position: absolute;
@@ -23,7 +23,12 @@ body, html {
 
 #totalScore {
     font-size: 24px;
-    margin-bottom: 20px; /* Added margin for spacing */
+    margin-bottom: 20px;
+}
+
+#score_total{
+    font-size: 24px;
+    margin-bottom: 20px;
 }
 
 #playButton {
@@ -74,16 +79,16 @@ body, html {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    display: none; /* Hide by default */
+    display: none;
     text-align: center;
 }
 
 #restartButtonContainer {
-    top: 60%; /* Position of restart button */
+    top: 60%;
 }
 
 #menuButtonContainer {
-    top: 65%; /* Position of menu button, adjust if needed */
+    top: 70%;
 }
 
 #restartButton, #menuButton {
@@ -113,4 +118,32 @@ body, html {
     border-radius: 5px;
     font-size: 18px;
     display: none;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    #totalScore {
+        font-size: 20px;
+    }
+
+    #playButton {
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+
+    #restartButton, #menuButton {
+        margin: 8px;
+        padding: 8px 16px;
+        font-size: 16px;
+    }
+
+    #message {
+        font-size: 20px;
+        padding: 16px;
+    }
+
+    #scoreBackground {
+        font-size: 16px;
+        padding: 8px;
+    }
 }
