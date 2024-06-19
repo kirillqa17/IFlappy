@@ -41,8 +41,8 @@ const menuButton = document.getElementById('menuButton');
 const scoreBackground = document.getElementById('scoreBackground');
 const scoreSpan = document.getElementById('score');
 const gameContainer = document.getElementById('gameContainer');
-const restartButtonContainer = document.getElementById('restartButtonContainer');
-const menuButtonContainer = document.getElementById('menuButtonContainer');
+const buttonContainer = document.getElementById('buttonContainer');
+
 
 const bird = {
     x: 50,
@@ -87,6 +87,7 @@ function startGame() {
     scoreBackground.style.display = 'block';
     gameInterval = setInterval(draw, 1000 / 60);
     messageDiv.style.display = 'none';
+    buttonContainer.style.display = 'none';
 }
 
 function draw() {
@@ -169,8 +170,7 @@ function triggerGameOver() {
 function gameOver() {
     messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
     messageDiv.style.display = "block";
-    restartButtonContainer.style.display = "block";
-    menuButtonContainer.style.display = "block";
+    buttonContainer.style.display = "block";
     scoreBackground.style.display = "none";
 }
 
@@ -183,15 +183,13 @@ function resetGame() {
     frame = 0;
     birdFlap = false;
     messageDiv.style.display = "none";
-    restartButtonContainer.style.display = "none";
-    menuButtonContainer.style.display = "none";
+    buttonContainer.style.display = 'none';
     startGame();
 }
 
 function goToMenu() {
     gameContainer.style.display = 'none';
     document.getElementById('menu').style.display = 'block';
-    loadScript('menu.js');
 }
 
 restartButton.addEventListener('click', resetGame);

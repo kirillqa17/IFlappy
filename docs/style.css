@@ -11,7 +11,6 @@ body, html {
     background-color: black;
     color: white;
     text-align: center;
-    padding: 20px;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -22,11 +21,6 @@ body, html {
 }
 
 #totalScore {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-#score_total{
     font-size: 24px;
     margin-bottom: 20px;
 }
@@ -48,7 +42,7 @@ body, html {
 }
 
 #gameContainer {
-    position: relative;
+    position: absolute;
     display: none;
     width: 100%;
     height: 100%;
@@ -61,13 +55,13 @@ body, html {
 }
 
 #message {
-    display: none;
+    display: block;
     text-align: center;
     color: white;
     font-size: 24px;
     margin-top: 20px;
     position: absolute;
-    top: 50%;
+    top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.8);
@@ -75,24 +69,18 @@ body, html {
     border-radius: 10px;
 }
 
-#restartButtonContainer, #menuButtonContainer {
+#buttonContainer {
     position: absolute;
+    top: calc(40% + 80px); /* Расположение кнопок чуть ниже надписи */
     left: 50%;
     transform: translateX(-50%);
-    display: none;
-    text-align: center;
-}
-
-#restartButtonContainer {
-    top: 60%;
-}
-
-#menuButtonContainer {
-    top: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #restartButton, #menuButton {
-    margin: 10px;
+    margin: 10px 0; /* Отступ между кнопками */
     padding: 10px 20px;
     font-size: 18px;
     background-color: white;
@@ -118,32 +106,4 @@ body, html {
     border-radius: 5px;
     font-size: 18px;
     display: none;
-}
-
-/* Media queries for responsiveness */
-@media (max-width: 768px) {
-    #totalScore {
-        font-size: 20px;
-    }
-
-    #playButton {
-        padding: 8px 16px;
-        font-size: 16px;
-    }
-
-    #restartButton, #menuButton {
-        margin: 8px;
-        padding: 8px 16px;
-        font-size: 16px;
-    }
-
-    #message {
-        font-size: 20px;
-        padding: 16px;
-    }
-
-    #scoreBackground {
-        font-size: 16px;
-        padding: 8px;
-    }
 }

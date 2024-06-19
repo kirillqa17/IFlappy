@@ -13,7 +13,7 @@ function fetchTotalScore() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            totalScoreNumber.textContent = `${data.total_score}`;
+            totalScoreNumber.textContent = data.total_score;
         })
         .catch(error => console.error('Error:', error));
 }

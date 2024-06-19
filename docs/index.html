@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird Game</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -10,16 +10,14 @@
 </head>
 <body>
     <div id="menu">
-        <h1 id="totalScore">Total Score: <span id = "score_total"></span></h1>
+        <h1 id="totalScore">Total Score:</h1>
         <button id="playButton">Play</button>
     </div>
     <div id="gameContainer">
         <canvas id="gameCanvas"></canvas>
-        <div id="message"></div>
-        <div id="restartButtonContainer">
+        <div id="message">Вы посадили Сашу на хуй. Ваш счет: 0</div>
+        <div id="buttonContainer">
             <button id="restartButton">Играть заново</button>
-        </div>
-        <div id="menuButtonContainer">
             <button id="menuButton">Выйти в меню</button>
         </div>
         <div id="scoreBackground">Score: <span id="score">0</span></div>
