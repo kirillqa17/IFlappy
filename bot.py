@@ -38,14 +38,16 @@ class GameResult(db.Model):
     score = Column(Integer, nullable=False)
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
     total_score = Column(Integer, nullable=False, default=0)
+    referrals_count = Column(Integer, nullable=False, default=0)
 
     __table_args__ = (PrimaryKeyConstraint('user_id', 'timestamp', name='game_results_pk'),)  # Composite primary key
 
-    def __init__(self, user_id, username, score, total_score):
+    def __init__(self, user_id, username, score, total_score, referrals_count):
         self.user_id = user_id
         self.username = username
         self.score = score
         self.total_score = total_score
+        self.referrals_count = referrals_count
 
 def get_total_score(user_id):
     result = db.session.query(GameResult.total_score).filter(GameResult.user_id == user_id).order_by(

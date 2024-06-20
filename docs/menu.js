@@ -17,9 +17,11 @@ const menu = document.getElementById('menu');
 const playButton = document.getElementById('playButton');
 const totalScoreElement = document.getElementById('totalScore');
 const totalScoreNumber = document.getElementById('score_total');
+const friendsElement = document.getElementById('friendsInvited');
+const friendsNumber = document.getElementById('friends_total');
 
 function fetchTotalScore() {
-    const userId = window.userId;  // Используем значение из URL
+    const userId = window.userId;
     const url = `http://localhost:5000/get_total_score/${userId}`;
 
     fetch(url)
