@@ -30,7 +30,23 @@ function fetchTotalScore() {
         .catch(error => console.error('Error:', error));
 }
 
-document.addEventListener('DOMContentLoaded', fetchTotalScore);
+
+function fetchReferralsCount() {
+    const userId = window.userId;
+    const url = `http://localhost:5000/get_referrals_count/${userId}`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            friendsNumber.textContent = data.referrals_count;
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchTotalScore();
+    fetchReferralsCount();
+});
 
 playButton.addEventListener('click', () => {
     menu.style.display = 'none';

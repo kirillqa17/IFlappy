@@ -17,6 +17,7 @@ for (let img of [birdImg, birdFlapImg, pipeNorthImg, pipeSouthImg, backgroundImg
         console.error("Failed to load image: ${img.src}");
     };
 }
+
 // Initialize game variables
 const canvas = document.getElementById('gameCanvas');
 const context = canvas.getContext('2d');
@@ -27,7 +28,6 @@ const scoreBackground = document.getElementById('scoreBackground');
 const scoreSpan = document.getElementById('score');
 const gameContainer = document.getElementById('gameContainer');
 const buttonContainer = document.getElementById('buttonContainer');
-
 
 const bird = {
     x: 50,
@@ -62,7 +62,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function startGame() {
-    gameStarted = true;
+    gameStarted = false;
     frame = 0;
     score = 0;
     pipes.length = 0;
@@ -70,10 +70,65 @@ function startGame() {
     bird.y = 150;
     bird.velocity = 0;
     scoreBackground.style.display = 'block';
-    gameInterval = setInterval(draw, 1000 / 60);
     messageDiv.style.display = 'none';
     buttonContainer.style.display = 'none';
+    startCountdown();
 }
+
+function startCountdown() {
+    let countdown = 3;
+
+    const countdownInterval = setInterval(() => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+        // Рисуем черный прямоугольник
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        context.fillStyle = 'white';
+        context.font = '48px Arial';
+        context.textAlign = 'center';
+        context.fillText(countdown, canvas.width / 2, canvas.height / 2);
+
+        countdown--;
+
+        if (countdown < 0) {
+            clearInterval(countdownInterval);
+            showStartMessage();
+        }
+    }, 1000);
+}
+
+function showStartMessage() {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+
+    // Рисуем черный прямоугольник
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.font = '48px Arial';
+    context.textAlign = 'center';
+
+    // Массив цветов для каждой буквы
+    const colors = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'];
+    const startText = 'START';
+
+    // Отрисовка каждой буквы с разным цветом
+    let xOffset = (canvas.width / 2) - (context.measureText(startText).width / 2);
+    for (let i = 0; i < startText.length; i++) {
+        context.fillStyle = colors[i % colors.length];
+        context.fillText(startText[i], xOffset, canvas.height / 2);
+        xOffset += context.measureText(startText[i]).width;
+    }
+
+    setTimeout(() => {
+        gameStarted = true;
+        gameInterval = setInterval(draw, 1000 / 60);
+    }, 1000);
+}
+
 
 function draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -157,6 +212,7 @@ function gameOver() {
     messageDiv.style.display = "block";
     buttonContainer.style.display = "block";
     scoreBackground.style.display = "none";
+    loadScript('menu.js');
 }
 
 function resetGame() {
@@ -221,5 +277,11 @@ function sendGameResult(score) {
     });
 }
 
-
 startGame();
+
+function loadScript(src) {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = () => console.log(`${src} loaded`);
+    document.head.appendChild(script);
+}

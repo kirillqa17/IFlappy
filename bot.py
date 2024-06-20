@@ -97,6 +97,16 @@ def handle_send_result(user_id, username):
         db.session.rollback()
         return jsonify(status='error', error=str(e))
 
+@app.route('/get_referrals_count/<int:user_id>', methods=['GET'])
+def handle_get_referrals_count(user_id):
+    try:
+        referrals_count = db.session.query(GameResult.referrals_count).filter(GameResult.user_id == user_id).scalar()
+        return jsonify({"referrals_count": referrals_count})
+    except Exception as e:
+        app.logger.error(f"Error fetching referrals count for user_id {user_id}: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 def run_flask():
     app.run(host='0.0.0.0', port=5000)
 
