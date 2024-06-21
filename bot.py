@@ -40,7 +40,7 @@ class GameResult(db.Model):
     timestamp = Column(DateTime, nullable=False, default=datetime.utcnow)
     total_score = Column(Integer, nullable=False, default=0)
     referrals_count = Column(Integer, nullable=False, default=0)
-    referrals = db.Column(ARRAY(db.String), default=[])
+    referrals = db.Column(ARRAY(db.BigInteger), default=[])
     has_referrer = db.Column(db.Boolean, default=False)
     referrer_id = db.Column(db.BigInteger, nullable=True)
 
@@ -71,8 +71,9 @@ def save_game_result(user_id, username, score):
         db.session.commit()
 
 def get_username(user_id):
-    user = db.session.query(GameResult.username).filter(GameResult.user_id == user_id).first()
-    return user.username if user else None
+    with app.app_context():
+        user = db.session.query(GameResult.username).filter(GameResult.user_id == user_id).first()
+        return user.username if user else None
 
 def create_user(user_id, username, referrer_id=None):
     with app.app_context():
@@ -81,12 +82,17 @@ def create_user(user_id, username, referrer_id=None):
             new_user = GameResult(user_id=user_id, username=username, score=0, total_score=0, referrals_count=0,
                                   referrals=[], has_referrer=bool(referrer_id), referrer_id=referrer_id)
             db.session.add(new_user)
+            db.session.commit()
             if referrer_id:
                 referrer = db.session.query(GameResult).filter(GameResult.user_id == referrer_id).first()
                 if referrer:
-                    referrer.referrals.append(user_id)
+                    if referrer.referrals is None:
+                        referrer.referrals = []
+                    updated_referrals = referrer.referrals + [user_id]
+                    referrer.referrals = updated_referrals
                     referrer.referrals_count += 1
-            db.session.commit()
+                    db.session.commit()
+
 
 
 @app.route('/get_total_score/<int:user_id>', methods=['GET'])
@@ -131,8 +137,6 @@ def handle_get_referrals_count(user_id):
         app.logger.error(f"Error fetching referrals count for user_id {user_id}: {e}")
         return jsonify({"error": str(e)}), 500
 
-def run_flask():
-    app.run(host='0.0.0.0', port=5000)
 
 
 @bot.message_handler(commands=['start'])
@@ -140,7 +144,6 @@ def send_welcome(message):
     user_id = message.from_user.id
     username = message.from_user.username
 
-    # Check if there's a referral ID
     referrer_id = None
     if len(message.text.split()) > 1:
         referrer_id = int(message.text.split()[1])
@@ -179,15 +182,20 @@ def invite_command_handler(msg):
 @bot.message_handler(commands=["my_referrals"])
 def my_referrals_command_handler(msg):
     user_id = msg.from_user.id
-    referrals = db.session.query(GameResult.referrals).filter(GameResult.user_id == user_id).scalar()
+    with app.app_context():
+        referrals = db.session.query(GameResult.referrals).filter(GameResult.user_id == user_id).scalar()
 
-    if referrals:
-        referral_usernames = [get_username(referral_id) for referral_id in referrals]
-        referral_list = "\n".join(referral_usernames)
-        bot.send_message(user_id, f"У вас {len(referrals)} рефералов:\n{referral_list}")
-    else:
-        bot.send_message(user_id, "У вас нет рефералов.")
+        if referrals:
+            referral_usernames = [f"@{get_username(referral_id)}" for referral_id in referrals]
+            referral_list = "\n".join(referral_usernames)
+            bot.send_message(user_id, f"У вас {len(referrals)} рефералов:\n{referral_list}")
+        else:
+            bot.send_message(user_id, "У вас нет рефералов.")
 
+
+
+def run_flask():
+    app.run(host='0.0.0.0', port=5000)
 
 if __name__ == '__main__':
     # Create tables in the database
