@@ -216,11 +216,12 @@ function gameOver() {
 }
 
 function resetGame() {
+    score = 0;
+    scoreSpan.textContent = score; 
     bird.y = 150;
     bird.velocity = 0;
     pipes.length = 0;
     smokes.length = 0;
-    score = 0;
     frame = 0;
     birdFlap = false;
     messageDiv.style.display = "none";
