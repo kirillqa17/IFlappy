@@ -212,7 +212,6 @@ function gameOver() {
     messageDiv.style.display = "block";
     buttonContainer.style.display = "block";
     scoreBackground.style.display = "none";
-    loadScript('menu.js');
 }
 
 function resetGame() {
@@ -229,13 +228,11 @@ function resetGame() {
     startGame();
 }
 
-function goToMenu() {
-    gameContainer.style.display = 'none';
-    document.getElementById('menu').style.display = 'block';
-}
+menuButton.addEventListener('click', () => {
+    window.location.href = `index.html?user_id=${window.userId}&username=${window.username}`;
+});
 
 restartButton.addEventListener('click', resetGame);
-menuButton.addEventListener('click', goToMenu);
 
 canvas.addEventListener('click', () => {
     if (gameStarted) {
