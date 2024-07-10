@@ -92,7 +92,10 @@ def create_user(user_id, username, referrer_id=None):
                     referrer.referrals = updated_referrals
                     referrer.referrals_count += 1
                     db.session.commit()
-
+                    try:
+                        bot.send_message(referrer_id, f"Ваш друг {username} присоединился по вашей реферальной ссылке!")
+                    except Exception as e:
+                        app.logger.error(f"Failed to send message to referrer {referrer_id}: {e}")
 
 
 @app.route('/get_total_score/<int:user_id>', methods=['GET'])
@@ -136,7 +139,6 @@ def handle_get_referrals_count(user_id):
     except Exception as e:
         app.logger.error(f"Error fetching referrals count for user_id {user_id}: {e}")
         return jsonify({"error": str(e)}), 500
-
 
 
 @bot.message_handler(commands=['start'])
@@ -191,7 +193,6 @@ def my_referrals_command_handler(msg):
             bot.send_message(user_id, f"У вас {len(referrals)} рефералов:\n{referral_list}")
         else:
             bot.send_message(user_id, "У вас нет рефералов.")
-
 
 
 def run_flask():

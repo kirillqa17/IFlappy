@@ -14,6 +14,15 @@
         <h1 id="friendsInvited">Friends Invited: <span id="friends_total"></span></h1>
         <button id="playButton">Play</button>
     </div>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="message">Вы посадили Сашу на хуй. Ваш счет: 0</div>
+        <div id="buttonContainer">
+            <button id="restartButton">Играть заново</button>
+            <button id="menuButton">Выйти в меню</button>
+        </div>
+        <div id="scoreBackground">Score: <span id="score">0</span></div>
+    </div>
     <script>
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');

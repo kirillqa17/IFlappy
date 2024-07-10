@@ -87,8 +87,8 @@ body, html {
     margin: 10px 0; /* Отступ между кнопками */
     padding: 10px 20px;
     font-size: 18px;
-    background-color: white;
-    color: black;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;

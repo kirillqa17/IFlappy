@@ -51,9 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 playButton.addEventListener('click', () => {
-    menu.style.display = 'none';
-    document.getElementById('gameContainer').style.display = 'block';
-    loadScript('game.js');
+    window.location.href = `game.html?user_id=${window.userId}&username=${window.username}`;
 });
 
 function loadScript(src) {
