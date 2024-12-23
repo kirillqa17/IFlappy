@@ -155,7 +155,7 @@ def send_welcome(message):
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     keyboard.add(telebot.types.KeyboardButton('/play'))
 
-    bot.send_message(message.chat.id, "Помоги Саше не насадиться на член! Используй /play, чтобы начать.",
+    bot.send_message(message.chat.id, "Используй /play, чтобы начать.",
                      reply_markup=keyboard)
 
 
@@ -167,11 +167,11 @@ def play_game(message):
 
     keyboard = telebot.types.InlineKeyboardMarkup()
     web_app_info = telebot.types.WebAppInfo(url=game_url)
-    web_app_button = telebot.types.InlineKeyboardButton(text="Быстрее жми, Саша умоляет. ну пожалуйста",
+    web_app_button = telebot.types.InlineKeyboardButton(text="Быстрее жми",
                                                         web_app=web_app_info)
     keyboard.add(web_app_button)
 
-    bot.reply_to(message, "Самое главное не посади его на хуй(или посади)", reply_markup=keyboard)
+    bot.reply_to(message, "Самое главное не ударься", reply_markup=keyboard)
 
 
 @bot.message_handler(commands=["invite"])

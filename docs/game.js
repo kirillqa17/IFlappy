@@ -5,10 +5,10 @@ const pipeSouthImg = new Image();
 const backgroundImg = new Image();
 const smokeImg = new Image();
 
-birdImg.src = 'images/sasha.jpg';
-birdFlapImg.src = 'images/sasha_flap.jpg';
-pipeNorthImg.src = 'images/chlen_vniz.jpg';
-pipeSouthImg.src = 'images/chlen_vverh.jpg';
+birdImg.src = 'images/ptica.png';
+birdFlapImg.src = 'images/ptica_flap.png';
+pipeNorthImg.src = 'images/tryba_vniz.jpg';
+pipeSouthImg.src = 'images/tryba_vverh.jpg';
 backgroundImg.src = 'images/fon.png';
 smokeImg.src = 'images/smoke.png';
 
@@ -32,8 +32,8 @@ const buttonContainer = document.getElementById('buttonContainer');
 const bird = {
     x: 50,
     y: 150,
-    width: 44,
-    height: 34,
+    width: 64,
+    height: 54,
     gravity: 0.25,
     lift: -5,
     velocity: 0
@@ -208,7 +208,7 @@ function triggerGameOver() {
 }
 
 function gameOver() {
-    messageDiv.textContent = "Вы посадили Сашу на хуй.\nВаш счет: " + score;
+    messageDiv.textContent = "Вы проиграли.\nВаш счет: " + score;
     messageDiv.style.display = "block";
     buttonContainer.style.display = "block";
     scoreBackground.style.display = "none";
